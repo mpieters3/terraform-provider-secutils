@@ -9,7 +9,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -68,7 +67,7 @@ func TestUnencryptRFC1423Function_Known(t *testing.T) {
 			{
 				Config: `
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423("` + strings.ReplaceAll(encryptedPEM, "\n", "\\n") + `", "test")
+					value = provider::cryptoutils::unencrypt_rfc1423(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "test")
 				}
 				`,
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -113,7 +112,7 @@ func TestUnencryptRFC1423Function_WrongPassword(t *testing.T) {
 			{
 				Config: `
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423("` + strings.ReplaceAll(encryptedPEM, "\n", "\\n") + `", "wrongpassword")
+					value = provider::cryptoutils::unencrypt_rfc1423(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "wrongpassword")
 				}
 				`,
 				ExpectError: regexp.MustCompile("(?s)decryption.password.incorrect"),
