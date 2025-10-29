@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -63,10 +64,17 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
+				variable "encrypted_pem" {
+					type = string
+				}
+
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "test")
+					value = provider::cryptoutils::unencrypt_pkcs8(var.encrypted_pem, "test")
 				}
 				`,
+				ConfigVariables: config.Variables{
+					"encrypted_pem": config.StringVariable(encryptedPEM),
+				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownOutputValue(
 						"test",
@@ -108,10 +116,17 @@ func TestUnencryptPKCS8Function_WrongPassword(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
+				variable "encrypted_pem" {
+					type = string
+				}
+
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "wrongpassword")
+					value = provider::cryptoutils::unencrypt_pkcs8(var.encrypted_pem, "wrongpassword")
 				}
 				`,
+				ConfigVariables: config.Variables{
+					"encrypted_pem": config.StringVariable(encryptedPEM),
+				},
 				ExpectError: regexp.MustCompile("(?s)Failed.to.decrypt.private.key:.pkcs8:.incorrect.password"),
 			},
 		},
