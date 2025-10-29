@@ -62,3 +62,20 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 ```shell
 make testacc
 ```
+
+
+
+pemdecrypt
+pemtojwks
+jwsktopem
+jkstopem
+pemtojks
+
+pkcstopem
+pemtopcks
+
+pemtoder
+dertopem
+
+p7btopem
+pemtop7b

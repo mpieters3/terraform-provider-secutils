@@ -58,8 +58,9 @@ func JKSAliasToPEM(ks *keystore.KeyStore, alias string, keyPassword []byte) (*Ke
 		}
 		return &KeyCertChain{
 			PrivateKey: privateKeyBlock,
-			PublicKey:  pemChain[0],
-			CertChain:  pemChain[1:],
+
+			PublicKey: pemChain[0],
+			CertChain: pemChain[1:],
 		}, nil
 	} else if ks.IsTrustedCertificateEntry(alias) {
 		certEntry, err := ks.GetTrustedCertificateEntry(alias)
