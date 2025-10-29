@@ -12,6 +12,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 	"github.com/pavlo-v-chernykh/keystore-go/v4"
 )
 
@@ -40,7 +41,11 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 -----END CERTIFICATE-----`
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
+		PreCheck: func() { testAccPreCheck(t) },
+
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_0_0),
+		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			// Create and Read testing
@@ -155,6 +160,9 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_0_0),
+		},
 		Steps: []resource.TestStep{
 			// Create with base JKS
 			{

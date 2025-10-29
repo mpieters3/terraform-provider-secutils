@@ -9,7 +9,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -65,7 +64,7 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 			{
 				Config: `
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8("` + strings.ReplaceAll(encryptedPEM, "\n", "\\n") + `", "test")
+					value = provider::cryptoutils::unencrypt_pkcs8(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "test")
 				}
 				`,
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -82,7 +81,7 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 func TestUnencryptPKCS8Function_InvalidPEM(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_8_0),
+			tfversion.SkipBelow(tfversion.Version1_0_0),
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
@@ -103,14 +102,14 @@ func TestUnencryptPKCS8Function_WrongPassword(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_8_0),
+			tfversion.SkipBelow(tfversion.Version1_0_0),
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8("` + strings.ReplaceAll(encryptedPEM, "\n", "\\n") + `", "wrongpassword")
+					value = provider::cryptoutils::unencrypt_pkcs8(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "wrongpassword")
 				}
 				`,
 				ExpectError: regexp.MustCompile("(?s)Failed.to.decrypt.private.key:.pkcs8:.incorrect.password"),
