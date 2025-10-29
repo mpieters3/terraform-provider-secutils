@@ -95,10 +95,10 @@ func TestUnencryptPKCS8Function_InvalidPEM(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8("invalid pem", "test")
-				}
-				`,
+output "test" {
+	value = provider::cryptoutils::unencrypt_pkcs8("invalid pem", "test")
+}
+`,
 				ExpectError: regexp.MustCompile("(?s)failed:.Unable.to.decode.private.key.into.a.block"),
 			},
 		},
