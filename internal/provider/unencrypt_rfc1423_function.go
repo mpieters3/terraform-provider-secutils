@@ -60,6 +60,7 @@ func (r UnencryptRFC1423Function) Run(ctx context.Context, req function.RunReque
 
 	var decryptedDER []byte
 
+	//nolint:staticcheck // SA1019 we're intentionally using this weak cipher on function purpose
 	decryptedDER, err := x509.DecryptPEMBlock(block, []byte(password))
 	if err != nil {
 		resp.Error = function.NewFuncError("Unable to decode private key with password using RFC1423: " + err.Error())

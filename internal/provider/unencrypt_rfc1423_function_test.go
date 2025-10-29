@@ -26,6 +26,7 @@ func generateRFC1423KeyPair(t *testing.T, password string) (string, string) {
 	}
 
 	// Convert the RFC1432 encrypted DER
+	//nolint:staticcheck // SA1019 we're intentionally using this weak cipher on function purpose
 	encryptedBlock, err := x509.EncryptPEMBlock(
 		rand.Reader,
 		"RSA PRIVATE KEY",
@@ -41,6 +42,7 @@ func generateRFC1423KeyPair(t *testing.T, password string) (string, string) {
 	encryptedPEM := string(pem.EncodeToMemory(encryptedBlock))
 
 	// Create unencrypted PEM for comparison
+	//nolint:staticcheck // SA1019 we're intentionally using this weak cipher on function purpose
 	unencryptedBytes, err := x509.DecryptPEMBlock(encryptedBlock, []byte(password))
 	if err != nil {
 		t.Fatalf("Failed to marshal unencrypted key: %v", err)

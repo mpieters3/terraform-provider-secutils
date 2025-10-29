@@ -101,7 +101,7 @@ func FullJKSToPEM(ks *keystore.KeyStore, jksPassword []byte) ([]*KeyCertChain, e
 	return pemBlocks, nil
 }
 
-// convertToKeystoreCert converts a PEM block to a keystore Certificate
+// convertToKeystoreCert converts a PEM block to a keystore Certificate.
 func convertToKeystoreCert(block *pem.Block) keystore.Certificate {
 	//TODO: Support other types
 	return keystore.Certificate{

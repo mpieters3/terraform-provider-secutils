@@ -20,7 +20,7 @@ import (
 	"github.com/pavlo-v-chernykh/keystore-go/v4"
 )
 
-// Ensure provider defined types fully satisfy framework interfaces
+// Ensure provider defined types fully satisfy framework interfaces.
 var _ resource.Resource = &JKSResource{}
 
 func NewJKSResource() resource.Resource {
@@ -30,7 +30,7 @@ func NewJKSResource() resource.Resource {
 // JKSResource defines the resource implementation.
 type JKSResource struct{}
 
-// KeyCertEntry describes a single private key, certificate and chain entry
+// KeyCertEntry describes a single private key, certificate and chain entry.
 type KeyCertEntry struct {
 	PrivateKey       types.String `tfsdk:"private_key"`
 	Certificate      types.String `tfsdk:"certificate"`
@@ -38,7 +38,7 @@ type KeyCertEntry struct {
 	Alias            types.String `tfsdk:"alias"`
 }
 
-// CertEntry describes a single certificate with an optional alias
+// CertEntry describes a single certificate with an optional alias.
 type CertEntry struct {
 	Certificate types.String `tfsdk:"certificate"`
 	Alias       types.String `tfsdk:"alias"`
@@ -133,7 +133,7 @@ func (r *JKSResource) Configure(ctx context.Context, req resource.ConfigureReque
 	// No configuration needed for this resource
 }
 
-// hashString calculates a SHA-256 hash of the input string
+// hashString calculates a SHA-256 hash of the input string.
 func hashString(input string) []byte {
 	h := sha256.New()
 	h.Write([]byte(input))
@@ -148,7 +148,7 @@ func decodePEMBlock(pemStr string) (*pem.Block, error) {
 	return block, nil
 }
 
-// createOrUpdateJKS handles the common logic for creating and updating a JKS resource
+// createOrUpdateJKS handles the common logic for creating and updating a JKS resource.
 func (r *JKSResource) createOrUpdateJKS(ctx context.Context, data *JKSResourceModel, diagnostics diag.Diagnostics, operation string) {
 	var ks keystore.KeyStore
 
