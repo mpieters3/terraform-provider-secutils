@@ -121,7 +121,10 @@ func TestUnencryptPKCS8Function_WrongPassword(t *testing.T) {
 				}
 
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8(var.encrypted_pem, "wrongpassword")
+					value = provider::cryptoutils::unencrypt_pkcs8(
+						var.encrypted_pem,
+						"wrongpassword"
+					)
 				}
 				`,
 				ConfigVariables: config.Variables{
