@@ -58,7 +58,7 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_0_0),
+			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
@@ -89,7 +89,7 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 func TestUnencryptPKCS8Function_InvalidPEM(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_0_0),
+			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
@@ -110,7 +110,7 @@ func TestUnencryptPKCS8Function_WrongPassword(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_0_0),
+			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{

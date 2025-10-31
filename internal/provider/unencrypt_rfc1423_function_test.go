@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
@@ -60,16 +61,23 @@ func TestUnencryptRFC1423Function_Known(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_0_0),
+			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
+				variable "encrypted_pem" {
+					type = string
+				}
+
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "test")
+					value = provider::cryptoutils::unencrypt_rfc1423(var.encrypted_pem, "test")
 				}
 				`,
+				ConfigVariables: config.Variables{
+					"encrypted_pem": config.StringVariable(encryptedPEM),
+				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownOutputValue(
 						"test",
@@ -84,7 +92,7 @@ func TestUnencryptRFC1423Function_Known(t *testing.T) {
 func TestUnencryptRFC1423Function_InvalidPEM(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_0_0),
+			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
@@ -105,16 +113,23 @@ func TestUnencryptRFC1423Function_WrongPassword(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
-			tfversion.SkipBelow(tfversion.Version1_0_0),
+			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
+				variable "encrypted_pem" {
+					type = string
+				}
+
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423(<<EOT` + "\n" + encryptedPEM + "\nEOT\n" + `, "wrongpassword")
+					value = provider::cryptoutils::unencrypt_rfc1423(var.encrypted_pem, "wrongpassword")
 				}
 				`,
+				ConfigVariables: config.Variables{
+					"encrypted_pem": config.StringVariable(encryptedPEM),
+				},
 				ExpectError: regexp.MustCompile("(?s)decryption.password.incorrect"),
 			},
 		},
