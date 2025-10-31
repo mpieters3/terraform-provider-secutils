@@ -52,10 +52,10 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 			{
 				Config: testAccJKSResourceConfig(testPrivateKey, testCertificate, testChainCert),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("secutils_jks.test", "jks"),
+					resource.TestCheckResourceAttrSet("cryptoutils_jks.test", "jks"),
 					// Verify we can decode and load the JKS
 					func(s *terraform.State) error {
-						rs, ok := s.RootModule().Resources["secutils_jks.test"]
+						rs, ok := s.RootModule().Resources["cryptoutils_jks.test"]
 						if !ok {
 							return fmt.Errorf("JKS resource not found")
 						}
@@ -80,8 +80,8 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 			{
 				Config: testAccJKSResourceConfigUpdated(testPrivateKey, testCertificate, testChainCert),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("secutils_jks.test", "jks"),
-					resource.TestCheckResourceAttr("secutils_jks.test", "alias", "updated-cert"),
+					resource.TestCheckResourceAttrSet("cryptoutils_jks.test", "jks"),
+					resource.TestCheckResourceAttr("cryptoutils_jks.test", "alias", "updated-cert"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -91,7 +91,7 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 
 func testAccJKSResourceConfig(privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
-resource "secutils_jks" "test" {
+resource "cryptoutils_jks" "test" {
   private_key       = %[1]q
   certificate      = %[2]q
   certificate_chain = [%[3]q]
@@ -103,7 +103,7 @@ resource "secutils_jks" "test" {
 
 func testAccJKSResourceConfigUpdated(privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
-resource "secutils_jks" "test" {
+resource "cryptoutils_jks" "test" {
   entries = [
     {
       private_key       = %[1]q
@@ -168,9 +168,9 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 			{
 				Config: testAccJKSResourceConfigWithBaseJKS(baseJKS, testPrivateKey, testCertificate, testChainCert),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttrSet("secutils_jks.test", "jks"),
-					resource.TestCheckResourceAttr("secutils_jks.test", "base_jks", baseJKS),
-					testVerifyJKSContent("secutils_jks.test"),
+					resource.TestCheckResourceAttrSet("cryptoutils_jks.test", "jks"),
+					resource.TestCheckResourceAttr("cryptoutils_jks.test", "base_jks", baseJKS),
+					testVerifyJKSContent("cryptoutils_jks.test"),
 				),
 			},
 			// Invalid base JKS
@@ -189,7 +189,7 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 
 func testAccJKSResourceConfigWithBaseJKS(baseJKS, privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
-resource "secutils_jks" "test" {
+resource "cryptoutils_jks" "test" {
   base_jks = %[1]q
   entries = [
     {
@@ -206,7 +206,7 @@ resource "secutils_jks" "test" {
 
 func testAccJKSResourceConfigWithWrongPassword(baseJKS, privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
-resource "secutils_jks" "test" {
+resource "cryptoutils_jks" "test" {
   base_jks = %[1]q
   entries = [
     {
