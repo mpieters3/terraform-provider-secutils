@@ -10,7 +10,13 @@ description: |-
 
 Takes a RFC1423 password-encrypted PEM and returns the decrypted RFC1423.
 
+## Example Usage
 
+```terraform
+output "example" {
+  value = provider::crypto::unencrypt_rfc1423(file("${path.module}/cert.key"), "test")
+}
+```
 
 ## Signature
 
