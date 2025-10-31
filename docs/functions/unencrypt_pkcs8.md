@@ -10,7 +10,13 @@ description: |-
 
 Takes a password-encrypted pkcs8 PEM and returns the decrypted PEM.
 
+## Example Usage
 
+```terraform
+output "example" {
+  value = provider::crypto::unencrypt_pkcs8(file("${path.module}/cert.key"), "test")
+}
+```
 
 ## Signature
 
