@@ -5,7 +5,6 @@ package provider
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -35,18 +34,14 @@ type CryptoProviderModel struct {
 }
 
 func (p *CryptoProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "cryptoutils"
+	resp.TypeName = "crypto"
 	resp.Version = p.version
 }
 
 func (p *CryptoProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
-				Optional:            true,
-			},
-		},
+		Description:         "Crypto Utilities Provider",
+		MarkdownDescription: "Various cryptographic utilities to unencrypt, reencrypt, or switch format of cryptographic materials.",
 	}
 }
 
@@ -58,14 +53,7 @@ func (p *CryptoProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
-
-	// Example client configuration for data sources and resources
-	client := http.DefaultClient
-	resp.DataSourceData = client
-	resp.ResourceData = client
+	// No-op for now
 }
 
 func (p *CryptoProvider) Resources(ctx context.Context) []func() resource.Resource {

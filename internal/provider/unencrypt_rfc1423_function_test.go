@@ -72,7 +72,7 @@ func TestUnencryptRFC1423Function_Known(t *testing.T) {
 				}
 
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423(var.encrypted_pem, "test")
+					value = provider::crypto::unencrypt_rfc1423(var.encrypted_pem, "test")
 				}
 				`,
 				ConfigVariables: config.Variables{
@@ -99,7 +99,7 @@ func TestUnencryptRFC1423Function_InvalidPEM(t *testing.T) {
 			{
 				Config: `
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423("invalid pem", "test")
+					value = provider::crypto::unencrypt_rfc1423("invalid pem", "test")
 				}
 				`,
 				ExpectError: regexp.MustCompile("(?s)failed:.Unable.to.decode.private.key.into.a.block"),
@@ -124,7 +124,7 @@ func TestUnencryptRFC1423Function_WrongPassword(t *testing.T) {
 				}
 
 				output "test" {
-					value = provider::cryptoutils::unencrypt_rfc1423(var.encrypted_pem, "wrongpassword")
+					value = provider::crypto::unencrypt_rfc1423(var.encrypted_pem, "wrongpassword")
 				}
 				`,
 				ConfigVariables: config.Variables{
