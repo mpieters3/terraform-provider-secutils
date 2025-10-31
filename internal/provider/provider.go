@@ -69,22 +69,15 @@ func (p *CryptoProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func (p *CryptoProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewExampleResource,
-		NewJKSResource,
-	}
+	return []func() resource.Resource{}
 }
 
 func (p *CryptoProvider) EphemeralResources(ctx context.Context) []func() ephemeral.EphemeralResource {
-	return []func() ephemeral.EphemeralResource{
-		NewExampleEphemeralResource,
-	}
+	return []func() ephemeral.EphemeralResource{}
 }
 
 func (p *CryptoProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewExampleDataSource,
-	}
+	return []func() datasource.DataSource{}
 }
 
 func (p *CryptoProvider) Functions(ctx context.Context) []func() function.Function {
