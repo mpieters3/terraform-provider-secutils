@@ -69,7 +69,7 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 				}
 
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8(var.encrypted_pem, "test")
+					value = provider::crypto::unencrypt_pkcs8(var.encrypted_pem, "test")
 				}
 				`,
 				ConfigVariables: config.Variables{
@@ -96,7 +96,7 @@ func TestUnencryptPKCS8Function_InvalidPEM(t *testing.T) {
 			{
 				Config: `
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8("invalid pem","test")
+					value = provider::crypto::unencrypt_pkcs8("invalid pem","test")
 				}
 				`,
 				ExpectError: regexp.MustCompile("(?s)failed:.Unable.to.decode.private.key.into.a.block"),
@@ -121,7 +121,7 @@ func TestUnencryptPKCS8Function_WrongPassword(t *testing.T) {
 				}
 
 				output "test" {
-					value = provider::cryptoutils::unencrypt_pkcs8(
+					value = provider::crypto::unencrypt_pkcs8(
 						var.encrypted_pem,
 						"wrongpassword"
 					)
