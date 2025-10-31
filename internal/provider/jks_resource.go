@@ -92,7 +92,7 @@ func (r *JKSResource) Schema(ctx context.Context, req resource.SchemaRequest, re
 			},
 			"additional_certs": schema.ListNestedAttribute{
 				MarkdownDescription: "List of PEM-encoded additional certificates to add for trust",
-				Required:            true,
+				Optional:            true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"certificate": schema.StringAttribute{

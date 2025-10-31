@@ -92,12 +92,15 @@ GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzEwMjgxNjAwMDBaFw0yMzEw
 func testAccJKSResourceConfig(privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
 resource "cryptoutils_jks" "test" {
-  private_key       = %[1]q
-  certificate      = %[2]q
-  certificate_chain = [%[3]q]
-  password         = "testpassword"
-  alias            = "test-cert"
-}
+  entries = [
+    {
+		private_key       = %[1]q
+		certificate      = %[2]q
+		certificate_chain = [%[3]q]
+		password         = "testpassword"
+		alias            = "test-cert"
+	}
+  ]
 `, privateKey, certificate, chainCert)
 }
 
