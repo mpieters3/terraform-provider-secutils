@@ -4,10 +4,6 @@
 package provider
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"regexp"
 	"testing"
 
@@ -18,44 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
-func generateRFC1423KeyPair(t *testing.T, password string) (string, string) {
-	// Generate an RSA private key
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		t.Fatalf("Failed to generate private key: %v", err)
-	}
-
-	// Convert the RFC1432 encrypted DER
-	//nolint:staticcheck // SA1019 we're intentionally using this weak cipher on function purpose
-	encryptedBlock, err := x509.EncryptPEMBlock(
-		rand.Reader,
-		"RSA PRIVATE KEY",
-		x509.MarshalPKCS1PrivateKey(privateKey),
-		[]byte(password),
-		x509.PEMCipherDES, //Consider eventually doing tests of other ciphers? Unlikely to matter though
-	)
-
-	if err != nil {
-		t.Fatalf("Failed to marshal private key: %v", err)
-	}
-
-	encryptedPEM := string(pem.EncodeToMemory(encryptedBlock))
-
-	// Create unencrypted PEM for comparison
-	//nolint:staticcheck // SA1019 we're intentionally using this weak cipher on function purpose
-	unencryptedBytes, err := x509.DecryptPEMBlock(encryptedBlock, []byte(password))
-	if err != nil {
-		t.Fatalf("Failed to marshal unencrypted key: %v", err)
-	}
-	unencryptedBlock := &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: unencryptedBytes,
-	}
-	unencryptedPEM := string(pem.EncodeToMemory(unencryptedBlock))
-
-	return encryptedPEM, unencryptedPEM
-}
-
 func TestUnencryptRFC1423Function_Known(t *testing.T) {
 	encryptedPEM, expectedPEM := generateRFC1423KeyPair(t, "test")
 
@@ -63,7 +21,7 @@ func TestUnencryptRFC1423Function_Known(t *testing.T) {
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
 			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -94,7 +52,7 @@ func TestUnencryptRFC1423Function_InvalidPEM(t *testing.T) {
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
 			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -115,7 +73,7 @@ func TestUnencryptRFC1423Function_WrongPassword(t *testing.T) {
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
 			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `

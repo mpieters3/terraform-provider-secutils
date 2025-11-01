@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/mpieters3/terraform-provider-crypto/internal/provider/jks"
 )
 
 // Ensure CryptoProvider satisfies various provider interfaces.
@@ -30,7 +30,6 @@ type CryptoProvider struct {
 
 // CryptoProviderModel describes the provider data model.
 type CryptoProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
 }
 
 func (p *CryptoProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -57,15 +56,21 @@ func (p *CryptoProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func (p *CryptoProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		jks.NewJKSResource,
+	}
 }
 
 func (p *CryptoProvider) EphemeralResources(ctx context.Context) []func() ephemeral.EphemeralResource {
-	return []func() ephemeral.EphemeralResource{}
+	return []func() ephemeral.EphemeralResource{
+		jks.NewJKSEphemeralResource,
+	}
 }
 
 func (p *CryptoProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return []func() datasource.DataSource{
+		jks.NewJKSDataSource,
+	}
 }
 
 func (p *CryptoProvider) Functions(ctx context.Context) []func() function.Function {

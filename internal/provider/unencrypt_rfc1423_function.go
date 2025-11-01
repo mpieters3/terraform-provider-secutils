@@ -28,11 +28,11 @@ func (r UnencryptRFC1423Function) Metadata(_ context.Context, req function.Metad
 func (r UnencryptRFC1423Function) Definition(_ context.Context, _ function.DefinitionRequest, resp *function.DefinitionResponse) {
 	resp.Definition = function.Definition{
 		Summary:             "Unencrypts a RFC1423 password-encrypted PEM block.",
-		MarkdownDescription: "Takes a RFC1423 password-encrypted PEM and returns the decrypted RFC1423.",
+		MarkdownDescription: "Takes a RFC1423 password-encrypted PEM private key pem and returns the decrypted private key.",
 		Parameters: []function.Parameter{
 			function.StringParameter{
 				Name:                "der",
-				MarkdownDescription: "RFC1423 password-encrypted PEM string.",
+				MarkdownDescription: "RFC1423 password-encrypted PEM private key string.",
 			},
 			function.StringParameter{
 				Name:                "password",
