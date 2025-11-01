@@ -75,6 +75,8 @@ func (p *CryptoProvider) DataSources(ctx context.Context) []func() datasource.Da
 
 func (p *CryptoProvider) Functions(ctx context.Context) []func() function.Function {
 	return []func() function.Function{
+		NewEncryptPKCS8Function,
+		NewEncryptRFC1423Function,
 		NewUnencryptRFC1423Function,
 		NewUnencryptPKCS8Function,
 	}
