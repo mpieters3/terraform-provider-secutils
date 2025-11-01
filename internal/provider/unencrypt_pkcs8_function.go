@@ -30,11 +30,11 @@ func (r UnencryptPKCS8Function) Metadata(_ context.Context, req function.Metadat
 func (r UnencryptPKCS8Function) Definition(_ context.Context, _ function.DefinitionRequest, resp *function.DefinitionResponse) {
 	resp.Definition = function.Definition{
 		Summary:             "Unencrypts a pkcs8 password-encrypted PEM block.",
-		MarkdownDescription: "Takes a password-encrypted pkcs8 PEM and returns the decrypted PEM.",
+		MarkdownDescription: "Takes a password-encrypted pkcs8 private key pem and returns the decrypted private key.",
 		Parameters: []function.Parameter{
 			function.StringParameter{
 				Name:                "pem",
-				MarkdownDescription: "Password-encrypted PEM string.",
+				MarkdownDescription: "Password-encrypted PEM private key string.",
 			},
 			function.StringParameter{
 				Name:                "password",

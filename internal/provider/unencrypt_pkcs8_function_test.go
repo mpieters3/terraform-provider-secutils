@@ -4,10 +4,6 @@
 package provider
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"regexp"
 	"testing"
 
@@ -16,42 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/tfversion"
-	"github.com/youmark/pkcs8"
 )
-
-func generatePKCS8TestKeyPair(t *testing.T, password string) (string, string) {
-	// Generate an RSA private key
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		t.Fatalf("Failed to generate private key: %v", err)
-	}
-
-	// Convert to PKCS8 and encrypt
-	privateKeyBytes, err := pkcs8.MarshalPrivateKey(privateKey, []byte(password), nil)
-	if err != nil {
-		t.Fatalf("Failed to marshal private key: %v", err)
-	}
-
-	// Create encrypted PEM
-	encryptedBlock := &pem.Block{
-		Type:  "ENCRYPTED PRIVATE KEY",
-		Bytes: privateKeyBytes,
-	}
-	encryptedPEM := string(pem.EncodeToMemory(encryptedBlock))
-
-	// Create unencrypted PEM for comparison
-	unencryptedBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
-	if err != nil {
-		t.Fatalf("Failed to marshal unencrypted key: %v", err)
-	}
-	unencryptedBlock := &pem.Block{
-		Type:  "PRIVATE KEY",
-		Bytes: unencryptedBytes,
-	}
-	unencryptedPEM := string(pem.EncodeToMemory(unencryptedBlock))
-
-	return encryptedPEM, unencryptedPEM
-}
 
 func TestUnencryptPKCS8Function_Known(t *testing.T) {
 	encryptedPEM, expectedPEM := generatePKCS8TestKeyPair(t, "test")
@@ -60,7 +21,7 @@ func TestUnencryptPKCS8Function_Known(t *testing.T) {
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
 			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -91,7 +52,7 @@ func TestUnencryptPKCS8Function_InvalidPEM(t *testing.T) {
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
 			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
@@ -112,7 +73,7 @@ func TestUnencryptPKCS8Function_WrongPassword(t *testing.T) {
 		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
 			tfversion.SkipBelow(tfversion.Version1_8_0), // Functions were added in 1.8
 		},
-		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		ProtoV6ProviderFactories: TestAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
 				Config: `
