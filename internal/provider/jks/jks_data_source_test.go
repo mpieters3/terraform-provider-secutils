@@ -146,7 +146,7 @@ func TestAccJKSDataSourceReadWithAdditionalCerts(t *testing.T) {
 	})
 }
 
-// Config that creates a JKS resource and reads it with the data source
+// Config that creates a JKS resource and reads it with the data source.
 func testAccJKSDataSourceReadConfig(privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
 resource "crypto_jks" "source" {
@@ -268,7 +268,7 @@ func TestAccJKSDataSourceWrongPassword(t *testing.T) {
 	})
 }
 
-// Config that creates a JKS with additional certs and reads it
+// Config that creates a JKS with additional certs and reads it.
 func testAccJKSDataSourceReadConfigWithAdditionalCerts(privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
 resource "crypto_jks" "source" {
@@ -294,7 +294,7 @@ data "crypto_jks" "test" {
 `, privateKey, certificate, chainCert)
 }
 
-// Config that creates a JKS with only additional certs (no private key entries)
+// Config that creates a JKS with only additional certs (no private key entries).
 func testAccJKSDataSourceOnlyAdditionalCertsConfig(chainCert string) string {
 	return fmt.Sprintf(`
 resource "crypto_jks" "source" {
@@ -318,7 +318,7 @@ data "crypto_jks" "test" {
 `, chainCert)
 }
 
-// Config with invalid base64 JKS
+// Config with invalid base64 JKS.
 func testAccJKSDataSourceInvalidJKSConfig() string {
 	return `
 data "crypto_jks" "test" {
@@ -328,7 +328,7 @@ data "crypto_jks" "test" {
 `
 }
 
-// Config with wrong password
+// Config with wrong password.
 func testAccJKSDataSourceWrongPasswordConfig(privateKey, certificate, chainCert string) string {
 	return fmt.Sprintf(`
 resource "crypto_jks" "source" {
