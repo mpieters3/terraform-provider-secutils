@@ -4,16 +4,12 @@
 package p12
 
 import (
-	"bytes"
 	"context"
-	"crypto/rand"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
-	"encoding/hex"
 	"encoding/pem"
 	"fmt"
-	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -60,15 +56,6 @@ func decodePEMBlock(pemStr string) (*pem.Block, error) {
 		return nil, fmt.Errorf("failed to decode PEM block")
 	}
 	return block, nil
-}
-
-// generateRandomAlias generates a random alias string for P12 entries.
-func generateRandomAlias() (string, error) {
-	bytes := make([]byte, 8)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", fmt.Errorf("failed to generate random alias: %w", err)
-	}
-	return "entry-" + hex.EncodeToString(bytes), nil
 }
 
 // createP12 handles the common logic for creating a P12 from the model data.
@@ -235,23 +222,6 @@ func createP12(ctx context.Context, data *P12Model, diagnostics *diag.Diagnostic
 	tflog.Trace(ctx, operation+" a P12")
 }
 
-// LoadP12 loads a P12 file from a path
-func LoadP12(p12Path string, p12Password string) ([]byte, error) {
-	// Load the P12 from the provided file path
-	f, err := os.Open(p12Path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open P12 file: %w", err)
-	}
-	defer f.Close()
-
-	var buf bytes.Buffer
-	if _, err := buf.ReadFrom(f); err != nil {
-		return nil, fmt.Errorf("failed to read P12 file: %w", err)
-	}
-
-	return buf.Bytes(), nil
-}
-
 // P12ToPEM extracts the private key and certificate chain from a P12 file to PEM format
 // Parameters:
 //   - p12Data: the P12 file bytes
@@ -298,60 +268,4 @@ func P12ToPEM(p12Data []byte, password string) (*util.KeyCertChain, error) {
 	}
 
 	return result, nil
-}
-
-// AddPEMToP12 adds a util.KeyCertChain data to a PKCS12 file
-// Parameters:
-//   - pemData: Data to add
-//   - password: password to protect the P12 file
-//
-// Returns:
-//   - []byte: the P12 file bytes
-//   - error: any error that occurred during conversion
-func AddPEMToP12(pemData *util.KeyCertChain, password string) ([]byte, error) {
-	var privateKey interface{}
-	var certificate *x509.Certificate
-	var caCerts []*x509.Certificate
-
-	// Parse the private key if present
-	if pemData.PrivateKey != nil {
-		var err error
-		privateKey, err = util.ParsePrivateKey(pemData.PrivateKey.Bytes)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse private key: %w", err)
-		}
-	}
-
-	// Parse the certificate if present
-	if pemData.PublicKey != nil {
-		var err error
-		certificate, err = util.ParseCertificate(pemData.PublicKey.Bytes)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse certificate: %w", err)
-		}
-	}
-
-	// Parse the certificate chain
-	for _, certBlock := range pemData.CertChain {
-		cert, err := util.ParseCertificate(certBlock.Bytes)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse certificate chain: %w", err)
-		}
-		caCerts = append(caCerts, cert)
-	}
-
-	// Encode as PKCS12
-	// Use Passwordless encoder if password is empty, otherwise use Modern encoder
-	var p12Data []byte
-	var err error
-	if password == "" {
-		p12Data, err = pkcs12.Passwordless.Encode(privateKey, certificate, caCerts, "")
-	} else {
-		p12Data, err = pkcs12.Modern.Encode(privateKey, certificate, caCerts, password)
-	}
-	if err != nil {
-		return nil, fmt.Errorf("failed to encode P12: %w", err)
-	}
-
-	return p12Data, nil
 }
