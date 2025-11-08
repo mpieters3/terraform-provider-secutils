@@ -12,7 +12,6 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -226,22 +225,6 @@ func createJKS(ctx context.Context, data *JKSModel, diagnostics *diag.Diagnostic
 	tflog.Trace(ctx, operation+" a JKS")
 }
 
-func LoadKeyStore(jksPath string, jksPassword []byte) (*keystore.KeyStore, error) {
-	// Load the keystore from the provided JKS string
-	ks := keystore.New()
-	f, err := os.Open(jksPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open JKS file: %w", err)
-	}
-	defer f.Close()
-
-	err = ks.Load(f, jksPassword)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load keystore: %w", err)
-	}
-	return &ks, nil
-}
-
 // Extracts the private key and its certificate chain to PEM blocks
 // Parameters:
 //   - ks: the loaded keystore
@@ -294,28 +277,6 @@ func JKSAliasToPEM(ks *keystore.KeyStore, alias string, keyPassword []byte) (*ut
 		}, nil
 	}
 	return nil, fmt.Errorf("no valid entry found for alias %s", alias)
-}
-
-// Extracts all entries from the keystore to PEM format
-// Parameters:
-//   - ks: the loaded keystore
-//   - jksPassword: password to unlock the JKS file. Assumes all private keys use the same password.
-//
-// Returns:
-//   - [][]*pem.Block: slice of slices of PEM blocks containing all entries. Each inner slice corresponds to one entry (private key + cert chain or trusted cert).
-//   - error: any error that occurred during conversion
-func FullJKSToPEM(ks *keystore.KeyStore, jksPassword []byte) ([]*util.KeyCertChain, error) {
-	var pemBlocks []*util.KeyCertChain
-
-	for _, alias := range ks.Aliases() {
-		keyCertChain, err := JKSAliasToPEM(ks, alias, jksPassword)
-		if err != nil {
-			return nil, fmt.Errorf("failed to convert entry for alias %s: %w", alias, err)
-		}
-		pemBlocks = append(pemBlocks, keyCertChain)
-	}
-
-	return pemBlocks, nil
 }
 
 // convertToKeystoreCert converts a PEM block to a keystore Certificate.

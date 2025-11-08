@@ -63,4 +63,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250707201910-8d1bb00bc6a7 // indirect
 	google.golang.org/grpc v1.75.1 // indirect
 	google.golang.org/protobuf v1.36.9 // indirect
+	software.sslmate.com/src/go-pkcs12 v0.6.0 // indirect
 )
